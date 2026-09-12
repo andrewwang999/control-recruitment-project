@@ -77,7 +77,7 @@ def pure_pursuit_steering(local_target, wheelbase = WHEELBASE):
     return steering
 
 
-def speed_dependent_lookahead(speed, base = 2.0, gain = 0.35, maximum = 8.0):
+def speed_dependent_lookahead(speed, base = 4.0, gain = 0.35, maximum = 8.0):
     return np.clip(base + gain * abs(speed), base, maximum)
 
 
@@ -190,9 +190,18 @@ def controller(x):
     return first_iteration(x)
 
 
-
-
 sim.set_controller(controller)
 sim.run()
+
+timestamps, states, controls, crash, slip = sim.get_results()
+sample_count = len(first_iteration.path)
+indices = np.array([nearest_path_index(position, first_iteration.path) for position in states[:2].T])
+sample_progress = (np.unwrap(indices * 2 * np.pi / sample_count) * sample_count / (2 * np.pi))
+lap_indices = np.flatnonzero(sample_progress - sample_progress[0] >= sample_count)
+lap_time = None if len(lap_indices) == 0 else timestamps[lap_indices[0]] - timestamps[0]
+
+print("Lap time:", lap_time)
+print("Crashes:", np.count_nonzero(crash))
+print("Slips:", np.count_nonzero(slip))
 sim.animate()
 sim.plot()

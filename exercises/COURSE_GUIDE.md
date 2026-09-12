@@ -1,4 +1,4 @@
-# 🏎️ FEB Controls Crash Course: Lessons 0–6
+# Controls Crash Course: Lessons 0–6
 
 This is the companion guide for the exercise course in this folder. Start with
 the NumPy lesson and work forward through the integrated controller in Lesson
